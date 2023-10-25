@@ -14,8 +14,6 @@ export default class Routing {
     }
 
     private createRoutes(): void {
-        this._router.use('/auth', (req, res, next) => {
-            next();
-        }, authRoute);
+        this._router.use('/auth', authRoute);
     }
 }
