@@ -14,8 +14,8 @@ export default class AuthController {
     }
 
     public createRoutes(): Router {
-        this._authRouter.post('/login', (req: Request, res: Response) => {
-            this.login(req, res);
+        this._authRouter.post('/login', async (req: Request, res: Response) => {
+            await this.login(req, res);
         });
         this._authRouter.post('/register', async (req: Request, res: Response) => {
             await this.register(req, res);
@@ -24,9 +24,9 @@ export default class AuthController {
         return this._authRouter;
     }
 
-    private login(req: Request, res: Response): void {
+    private async login(req: Request, res: Response): Promise<void> {
         let loginRequest = new LoginRequest(req.body?.userId, req.body?.userPassword);
-        let token: JwtToken = this._authService.login(loginRequest);
+        let token: JwtToken = await this._authService.login(loginRequest);
         res.status(200).send(token);
     }
 

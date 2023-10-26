@@ -2,6 +2,8 @@ export default class RegisterRequest {
     private _userId: string;
     private _userPassword: string;
     private _repeatedUserPassword: string;
+    private _firstName: string;
+    private _lastName: string;
 
     constructor(userId: string, userPassword: string, repeatedUserPassword: string) {
         this.userId = userId;

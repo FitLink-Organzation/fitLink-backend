@@ -1,25 +1,25 @@
 export default class LoginRequest {
-    private _userId: string;
+    private _userName: string;
     private _userPassword: string;
 
     constructor(userId: string, userPassword: string) {
-        this.userId = userId;
+        this.userName = userId;
         this.userPassword = userPassword;
     }
 
-    public get userId(): string {
-        return this._userId;
+    public get userName(): string {
+        return this._userName;
     }
 
     public get userPassword(): string {
         return this._userPassword;
     }
 
-    private set userId(userId: string) {
+    private set userName(userId: string) {
         if (userId === undefined || userId === null || userId === '') {
             throw new Error('User id not provided!');
         }
-        this._userId = userId;
+        this._userName = userId;
     }
 
     private set userPassword(userPassword: string) {

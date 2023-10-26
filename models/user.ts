@@ -1,5 +1,5 @@
 export default class User {
-    constructor(private _userId: string, private _passwordHash: string) {
+    constructor(public userName: string, public passwordHash: string, public lastName: string, public firstName: string) {
 
     }
 }
