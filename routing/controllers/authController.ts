@@ -17,8 +17,8 @@ export default class AuthController {
         this._authRouter.post('/login', (req: Request, res: Response) => {
             this.login(req, res);
         });
-        this._authRouter.post('/register', (req: Request, res: Response) => {
-            this.register(req, res);
+        this._authRouter.post('/register', async (req: Request, res: Response) => {
+            await this.register(req, res);
         });
 
         return this._authRouter;
@@ -30,9 +30,9 @@ export default class AuthController {
         res.status(200).send(token);
     }
 
-    private register(req: Request, res: Response): void {
+    private async register(req: Request, res: Response): Promise<void> {
         let registerRequest = new RegisterRequest(req.body?.userId, req.body?.userPassword, req.body?.repeatedUserPassword);
-        let token = this._authService.register(registerRequest);
+        let token = await this._authService.register(registerRequest);
         res.status(200).send(token);
     }
 }

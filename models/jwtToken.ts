@@ -1,6 +1,10 @@
 export default class JwtToken {
 
-    constructor(private accessToken: string, private refreshToken: string) {
+    constructor(private _accessToken: string) {
 
+    }
+
+    public get accessToken(): string {
+        return this.accessToken;
     }
 }
