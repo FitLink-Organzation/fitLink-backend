@@ -19,13 +19,17 @@ export default class AuthService {
     }
 
     public async login(loginRequest: LoginRequest): Promise<JwtToken> {
-        let user: IUserDocument | null = await this._userRepository.getByUserName(loginRequest.userName);
+        let dbUser: IUserDocument | null = await this._userRepository.getByUserName(loginRequest.userName);
+        console.debug(dbUser);
 
-        if (!user) {
+        if (!dbUser) {
             throw new Error('User not found!');
         }
-        
-        let token = this._jwtTokenService.generateTokenForUser(new User(user?.userName, user?.passwordHash, user?.lastName, user?.firstName));
+        let user = new User(dbUser?.userName, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
+        let token = this._jwtTokenService.generateTokenForUser(user);
+
+        user.accessToken = token.accessToken;
+        await this._userRepository.updateUser(user);
         return token;
     }
 
@@ -34,6 +38,7 @@ export default class AuthService {
         let user = new User(registerRequest.userId, hashedPassword, 'Jon', 'Does');
         let token = this._jwtTokenService.generateTokenForUser(user);
 
+        user.accessToken = token.accessToken;
         await this._userRepository.createUser(user);
         console.debug('User registered!');
 

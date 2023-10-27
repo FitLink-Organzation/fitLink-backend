@@ -7,6 +7,10 @@ export default class UserRepository {
         await UserModel.create(user);
     }
 
+    public async updateUser(user: User): Promise<void> {
+        await UserModel.updateOne({ userName: user.userName }, user);
+    }
+
     public async getByUserName(userName: string): Promise<IUserDocument | null> {
         return await UserModel.findOne({ userName: userName });
     }

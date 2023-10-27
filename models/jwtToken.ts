@@ -5,6 +5,6 @@ export default class JwtToken {
     }
 
     public get accessToken(): string {
-        return this.accessToken;
+        return this._accessToken;
     }
 }
