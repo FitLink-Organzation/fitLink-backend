@@ -1,11 +1,9 @@
-import { Connection } from './node_modules/mongodb/src/cmap/connection';
 import { ErrorMiddleware } from './middlewares/errorMiddleware';
 import express, { Express } from "express";
 import dotenv from "dotenv";
 import Routing from "./routing/routing";
 import bodyParser from "body-parser";
 import Database from './database/database';
-import mongoose from 'mongoose';
 
 dotenv.config();
 
