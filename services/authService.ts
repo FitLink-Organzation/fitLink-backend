@@ -25,6 +25,10 @@ export default class AuthService {
         if (!dbUser) {
             throw new Error('User not found!');
         }
+        if (!await this._hashingService.verifyPasswordHash(loginRequest.userPassword, dbUser.passwordHash)) {
+            throw new Error('Wrong password!');
+        }
+        
         let user = new User(dbUser?.userName, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
         let token = this._jwtTokenService.generateTokenForUser(user);
 
