@@ -1,8 +1,9 @@
 import express, { Router, Request, Response } from "express";
 import AuthService from "../services/authService";
-import JwtToken from "../models/jwtToken";
 import LoginRequest from "../routing/requests/loginRequest";
 import RegisterRequest from "../routing/requests/registerRequest";
+import RefreshRequest from "../routing/requests/refreshRequest";
+import { JwtToken } from "../models/jwtToken";
 
 export default class AuthController {
     private _authService: AuthService;
@@ -20,6 +21,12 @@ export default class AuthController {
     public async register(req: Request, res: Response): Promise<void> {
         let registerRequest = new RegisterRequest(req.body?.userId, req.body?.userPassword, req.body?.repeatedUserPassword);
         let token = await this._authService.register(registerRequest);
+        res.status(200).send(token);
+    }
+
+    public async refresh(req: Request, res: Response): Promise<void> {
+        const refreshRequest = new RefreshRequest(req.body);
+        let token = await this._authService.refresh(refreshRequest);
         res.status(200).send(token);
     }
 }

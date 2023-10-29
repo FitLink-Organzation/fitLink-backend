@@ -11,6 +11,9 @@ export default function authRoute(): Router {
     authRouter.post('/register', async (req: Request, res: Response, next: NextFunction) => {
         await authController.register(req, res).catch((err => next(err)));
     });
+    authRouter.post('/refresh', async (req: Request, res: Response, next: NextFunction) => {
+        await authController.refresh(req, res).catch((err => next(err)));
+    });
 
     return authRouter;
 }

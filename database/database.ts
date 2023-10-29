@@ -17,9 +17,7 @@ export default class Database {
     }
 
     public async connectToDatabase(): Promise<void> {
-        await mongoose.connect(this._connectionString, {
-
-        });
+        await mongoose.connect(this._connectionString);
 
         console.debug('Connected to database!');
     }

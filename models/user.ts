@@ -4,4 +4,5 @@ export default class User {
     }
 
     public accessToken: string = '';
+    public refreshToken: string = '';
 }

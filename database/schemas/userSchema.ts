@@ -6,6 +6,7 @@ export interface IUserDocument extends mongoose.Document {
     userName: string;
     passwordHash: string;
     accessToken: string;
+    refreshToken: string;
 }
 
 const UserSchema: mongoose.Schema<IUserDocument> = new mongoose.Schema({
@@ -13,7 +14,8 @@ const UserSchema: mongoose.Schema<IUserDocument> = new mongoose.Schema({
     lastName: { type: String, unique: false, required: true },
     userName: { type: String, unique: true, required: true },
     passwordHash: { type: String, unique: false, required: true },
-    accessToken: { type: String, unique: false, required: false }
+    accessToken: { type: String, unique: false, required: false },
+    refreshToken: { type: String, unique: false, required: false }
 })
 
 export const UserModel = mongoose.model<IUserDocument>('User', UserSchema);

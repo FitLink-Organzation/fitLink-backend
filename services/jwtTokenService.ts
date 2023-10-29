@@ -1,37 +1,56 @@
-import { Secret, decode, verify, sign, SignOptions } from 'jsonwebtoken';
-import JwtToken from "../models/jwtToken";
+import { Secret, decode, verify, sign, SignOptions, VerifyOptions } from 'jsonwebtoken';
 import dotenv from "dotenv";
 import User from '../models/user';
+import { JwtUserPayload } from '../models/jwtToken';
 
 export default class JwtTokenService {
-    private _jwtSecretKey: string;
-    private _tokenLifetime: number;
+    private readonly _jwtSecretKey: string;
+    private readonly _accessTokenLifetime: number;
+    private readonly _refreshTokenLifetime: number;
 
     constructor() {
         dotenv.config();
 
-        let jwtSecretKey: string | undefined = process.env.JWT_SECRET_KEY;
-        let tokenLifetime: string | undefined = process.env.TOKEN_LIFETIME_DAYS;
+        const jwtSecretKey: string | undefined = process.env.JWT_SECRET_KEY;
+        const accessTokenLifetime: string | undefined = process.env.ACCESS_TOKEN_LIFETIME_DAYS;
+        const refreshTokenLifetime: string | undefined = process.env.REFRESH_TOKEN_LIFETIME_DAYS;
 
-        if (!jwtSecretKey || !tokenLifetime) {
+
+        if (!jwtSecretKey || !accessTokenLifetime || !refreshTokenLifetime) {
             console.error('Wrong server configuration provided!')
             throw new Error('Wrong server configuration provided!');
         }
 
         this._jwtSecretKey = jwtSecretKey;
-        this._tokenLifetime = Number(tokenLifetime);
+        this._accessTokenLifetime = Number(accessTokenLifetime);
+        this._refreshTokenLifetime = Number(refreshTokenLifetime);
     }
 
-    public generateTokenForUser(user: User): JwtToken {
-        let options: SignOptions = {
-            expiresIn: this._tokenLifetime
+    public generateAccessTokenForUser(user: User): string {
+        const options: SignOptions = {
+            expiresIn: this._accessTokenLifetime * 24 * 60 * 60
         }
 
-        const token = sign({user}, this._jwtSecretKey, options);
-        return new JwtToken(token);
+        return sign({ user }, this._jwtSecretKey, options);
     }
 
-    public validateToken(token: string): string {
-        return verify(token, this._jwtSecretKey) as string;
+    public generateRefreshTokenForUser(user: User): string {
+        const options: SignOptions = {
+            expiresIn: this._refreshTokenLifetime * 24 * 60 * 60
+        }
+
+        return sign({ user }, this._jwtSecretKey, options);
+    }
+
+    public validateToken(token: string): JwtUserPayload {
+        const verifyOptions: VerifyOptions = {
+            ignoreExpiration: true
+        }
+
+        try {
+            return <JwtUserPayload>verify(token, this._jwtSecretKey, verifyOptions);
+        } catch (error) {
+            throw new Error('Invalid token!');
+        }
     }
 }
