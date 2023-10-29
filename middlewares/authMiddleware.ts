@@ -1,18 +1,13 @@
 import dotenv from 'dotenv';
 import { Request, Response, NextFunction } from "express";
-import AuthToken from '../models/authToken';
 import JwtTokenService from '../services/jwtTokenService';
+import { JwtUserPayload } from '../models/jwtToken';
 
 dotenv.config();
 
 export class AuthMiddleware {
-    private _jwtTokenService: JwtTokenService;
-
-    constructor() {
-        this._jwtTokenService = new JwtTokenService();
-    }
-
     public run(req: Request, res: Response, next: NextFunction): void {
+        const jwtTokenService = new JwtTokenService();
         const token: string = req.headers.authorization?.replace('Bearer ', '') || '';
 
         if (!token) {
@@ -20,6 +15,12 @@ export class AuthMiddleware {
             return;
         }
 
-        let decoded = this._jwtTokenService.validateToken(token);
+        try {
+            const decoded: JwtUserPayload = jwtTokenService.validateToken(token);
+            res.status(200).send(decoded);
+            next();
+        } catch(error) {
+            next(error)
+        }
     }
 }

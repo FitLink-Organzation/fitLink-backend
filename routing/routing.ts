@@ -1,5 +1,6 @@
 import { Router } from "express";
 import authRoute from "./routes/auth.route";
+import trainingRoute from "./routes/training.route";
 
 export default class Routing {
     private _router: Router;
@@ -15,5 +16,6 @@ export default class Routing {
 
     private createRoutes(): void {
         this._router.use('/auth', authRoute());
+        this._router.use('/training', trainingRoute());
     }
 }
