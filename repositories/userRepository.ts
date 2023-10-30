@@ -8,11 +8,11 @@ export default class UserRepository {
     }
 
     public async updateUser(user: User): Promise<void> {
-        await UserModel.updateOne({ userName: user.userName }, user);
+        await UserModel.updateOne({ email: user.email }, user);
     }
 
-    public async getByUserName(userName: string): Promise<IUserDocument | null> {
-        return await UserModel.findOne({ userName: userName });
+    public async getByEmail(email: string): Promise<IUserDocument | null> {
+        return await UserModel.findOne({ email: email });
     }
 
     public async getByUserId(userId: string): Promise<IUserDocument | null> {

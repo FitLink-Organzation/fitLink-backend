@@ -1,4 +1,3 @@
-import { JwtPayload } from 'jsonwebtoken';
 import { IUserDocument } from "../database/schemas/userSchema";
 import { JwtToken, JwtUserPayload } from "../models/jwtToken";
 import User from "../models/user";
@@ -21,7 +20,7 @@ export default class AuthService {
     }
 
     public async login(loginRequest: LoginRequest): Promise<JwtToken> {
-        const dbUser: IUserDocument | null = await this._userRepository.getByUserName(loginRequest.userName);
+        const dbUser: IUserDocument | null = await this._userRepository.getByEmail(loginRequest.email);
         console.debug(dbUser);
 
         if (!dbUser) {
@@ -31,7 +30,7 @@ export default class AuthService {
             throw new Error('Wrong password!');
         }
         
-        const user = new User(dbUser?.userName, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
+        const user = new User(dbUser?.email, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
         const accessToken: string = this._jwtTokenService.generateAccessTokenForUser(user);
         const refreshToken: string = this._jwtTokenService.generateRefreshTokenForUser(user);
         const token: JwtToken = new JwtToken(accessToken, refreshToken);
@@ -65,7 +64,7 @@ export default class AuthService {
             throw new Error('Invalid refresh token!');
         }
 
-        const dbUser: IUserDocument | null = await this._userRepository.getByUserName(jwtPayload.user.userName);
+        const dbUser: IUserDocument | null = await this._userRepository.getByEmail(jwtPayload.user.email);
 
         if (!dbUser) {
             throw new Error('User not found!');
@@ -85,7 +84,7 @@ export default class AuthService {
             throw new Error('Invalid refresh token!');
         }
 
-        const user = new User(dbUser.userName, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
+        const user = new User(dbUser.email, dbUser?.passwordHash, dbUser?.lastName, dbUser?.firstName);
         const accessToken: string = this._jwtTokenService.generateAccessTokenForUser(user);
         const refreshToken: string = this._jwtTokenService.generateRefreshTokenForUser(user);
         const token: JwtToken = new JwtToken(accessToken, refreshToken);
