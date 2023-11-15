@@ -1,21 +1,25 @@
 import { createTables, Database } from './database/utils/db'
-import express, { Express } from "express";
+import express, {Express, NextFunction} from "express";
+import cookieParser from 'cookie-parser'
+
 import dotenv from "dotenv";
-import Routing from "./routing/routing";
-import bodyParser from "body-parser";
+import {authRoute} from "./routing/routes/auth.route";
 
 dotenv.config();
 
 const port: number = Number(process.env.PORT) || 8000;
 const app: Express = express();
-
+//Init DB
 (async () => {
     const database = Database.getInstance()
     await database.getPool().connect()
-    createTables()
+    await createTables()
 })()
 
-app.use(bodyParser.json());
+app.use(express.json());
+app.use(cookieParser());
+
+app.use("/authenticate", authRoute);
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);

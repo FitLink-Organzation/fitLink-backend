@@ -1,19 +1,10 @@
-import express, { NextFunction, Request, Response, Router } from "express";
-import AuthController from "../../controllers/authController";
+import express from 'express'
+import AuthController from "../../controllers/auth.controller";
 
-export default function authRoute(): Router {
-    let authRouter = express.Router();
-    let authController = new AuthController();
+export const authRoute = express()
+const authController = new AuthController()
 
-    authRouter.post('/login', async (req: Request, res: Response, next: NextFunction) => {
-        await authController.login(req, res).catch((err => next(err)));
-    });
-    authRouter.post('/register', async (req: Request, res: Response, next: NextFunction) => {
-        await authController.register(req, res).catch((err => next(err)));
-    });
-    authRouter.post('/refresh', async (req: Request, res: Response, next: NextFunction) => {
-        await authController.refresh(req, res).catch((err => next(err)));
-    });
+authRoute.post('/login', authController.handleLogin);
+authRoute.post('/register', authController.handleRegister);
+authRoute.post('/refreshToken', authController.handleRefreshToken);
 
-    return authRouter;
-}
